@@ -1,0 +1,1 @@
+<img src="{{ asset('images/logo-icon.png') }}" {{ $attributes }} alt="Master IELTS Logo">

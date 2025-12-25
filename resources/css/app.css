@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    scroll-behavior: smooth;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Scroll Reveal Animation */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Login Page Styles */
+.login-bg-gradient {
+    background: linear-gradient(90.81deg, #045F98 -14.55%, #011F32 105.37%);
+}
+
+.login-card-bg {
+    background-image: url('/images/home-page-contact-Bg.webp'); 
+}
+
+.login-card-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.32) -31.93%, #1B242F 100%);
+}

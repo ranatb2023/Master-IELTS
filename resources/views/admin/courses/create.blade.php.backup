@@ -1,0 +1,321 @@
+@extends('layouts.admin')
+
+@section('title', 'Create Course')
+
+@section('content')
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Create New Course</h1>
+                <p class="mt-2 text-gray-600">Fill in the details below to create a new course</p>
+            </div>
+            <a href="{{ route('admin.courses.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Courses
+            </a>
+        </div>
+    </div>
+
+    <form action="{{ route('admin.courses.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Content (Left Column) -->
+            <div class="lg:col-span-2 space-y-6">
+
+        <!-- Basic Information -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Title -->
+                <div class="md:col-span-2">
+                    <label for="title" class="block text-sm font-medium text-gray-700">Course Title *</label>
+                    <input type="text" name="title" id="title" value="{{ old('title') }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('title') border-red-500 @enderror">
+                    @error('title')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Slug -->
+                <div class="md:col-span-2">
+                    <label for="slug" class="block text-sm font-medium text-gray-700">Slug (Optional)</label>
+                    <input type="text" name="slug" id="slug" value="{{ old('slug') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('slug') border-red-500 @enderror">
+                    <p class="mt-1 text-xs text-gray-500">Leave blank to auto-generate from title</p>
+                    @error('slug')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Subtitle -->
+                <div class="md:col-span-2">
+                    <label for="subtitle" class="block text-sm font-medium text-gray-700">Subtitle</label>
+                    <input type="text" name="subtitle" id="subtitle" value="{{ old('subtitle') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <!-- Short Description -->
+                <div class="md:col-span-2">
+                    <label for="short_description" class="block text-sm font-medium text-gray-700">Short Description</label>
+                    <textarea name="short_description" id="short_description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('short_description') }}</textarea>
+                </div>
+
+                <!-- Description -->
+                <div class="md:col-span-2">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Full Description</label>
+                    <textarea name="description" id="description" rows="6" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('description') }}</textarea>
+                </div>
+
+                <!-- Instructor -->
+                <div>
+                    <label for="instructor_id" class="block text-sm font-medium text-gray-700">Instructor *</label>
+                    <select name="instructor_id" id="instructor_id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('instructor_id') border-red-500 @enderror">
+                        <option value="">Select Instructor</option>
+                        @foreach($instructors as $instructor)
+                            <option value="{{ $instructor->id }}" {{ old('instructor_id') == $instructor->id ? 'selected' : '' }}>
+                                {{ $instructor->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('instructor_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Category -->
+                <div>
+                    <label for="category_id" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select name="category_id" id="category_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Select Category</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Level -->
+                <div>
+                    <label for="level" class="block text-sm font-medium text-gray-700">Level</label>
+                    <select name="level" id="level" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="">Select Level</option>
+                        <option value="beginner" {{ old('level') == 'beginner' ? 'selected' : '' }}>Beginner</option>
+                        <option value="intermediate" {{ old('level') == 'intermediate' ? 'selected' : '' }}>Intermediate</option>
+                        <option value="advanced" {{ old('level') == 'advanced' ? 'selected' : '' }}>Advanced</option>
+                        <option value="all_levels" {{ old('level') == 'all_levels' ? 'selected' : '' }}>All Levels</option>
+                    </select>
+                </div>
+
+                <!-- Language -->
+                <div>
+                    <label for="language" class="block text-sm font-medium text-gray-700">Language</label>
+                    <input type="text" name="language" id="language" value="{{ old('language', 'english') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing & Settings -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Pricing & Settings</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Is Free -->
+                <div class="md:col-span-3">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="is_free" value="1" {{ old('is_free') ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <span class="ml-2 text-sm text-gray-700">This is a free course</span>
+                    </label>
+                </div>
+
+                <!-- Price -->
+                <div>
+                    <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+                    <input type="number" step="0.01" name="price" id="price" value="{{ old('price') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <!-- Sale Price -->
+                <div>
+                    <label for="sale_price" class="block text-sm font-medium text-gray-700">Sale Price</label>
+                    <input type="number" step="0.01" name="sale_price" id="sale_price" value="{{ old('sale_price') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <!-- Currency -->
+                <div>
+                    <label for="currency" class="block text-sm font-medium text-gray-700">Currency</label>
+                    <input type="text" name="currency" id="currency" value="{{ old('currency', 'USD') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <!-- Duration Hours -->
+                <div>
+                    <label for="duration_hours" class="block text-sm font-medium text-gray-700">Duration (Hours)</label>
+                    <input type="number" step="0.5" name="duration_hours" id="duration_hours" value="{{ old('duration_hours') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <!-- Enrollment Limit -->
+                <div>
+                    <label for="enrollment_limit" class="block text-sm font-medium text-gray-700">Enrollment Limit</label>
+                    <input type="number" name="enrollment_limit" id="enrollment_limit" value="{{ old('enrollment_limit') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <p class="mt-1 text-xs text-gray-500">Leave blank for unlimited</p>
+                </div>
+
+                <!-- Status -->
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                    <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                        <option value="review" {{ old('status') == 'review' ? 'selected' : '' }}>In Review</option>
+                        <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Published</option>
+                        <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>Archived</option>
+                    </select>
+                </div>
+
+                <!-- Visibility -->
+                <div>
+                    <label for="visibility" class="block text-sm font-medium text-gray-700">Visibility</label>
+                    <select name="visibility" id="visibility" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="public" {{ old('visibility') == 'public' ? 'selected' : '' }}>Public</option>
+                        <option value="private" {{ old('visibility') == 'private' ? 'selected' : '' }}>Private</option>
+                        <option value="unlisted" {{ old('visibility') == 'unlisted' ? 'selected' : '' }}>Unlisted</option>
+                    </select>
+                </div>
+
+                <!-- Certificate Enabled -->
+                <div>
+                    <label class="inline-flex items-center mt-6">
+                        <input type="checkbox" name="certificate_enabled" value="1" {{ old('certificate_enabled', true) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <span class="ml-2 text-sm text-gray-700">Certificate Enabled</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Media -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Media</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Thumbnail -->
+                <div>
+                    <label for="thumbnail" class="block text-sm font-medium text-gray-700">Thumbnail Image</label>
+                    <input type="file" name="thumbnail" id="thumbnail" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                </div>
+
+                <!-- Preview Video -->
+                <div>
+                    <label for="preview_video" class="block text-sm font-medium text-gray-700">Preview Video URL</label>
+                    <input type="url" name="preview_video" id="preview_video" value="{{ old('preview_video') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Outcomes -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Learning Outcomes</h3>
+            <div x-data="{ outcomes: {{ json_encode(old('learning_outcomes', [''])) }} }">
+                <div class="space-y-3">
+                    <template x-for="(outcome, index) in outcomes" :key="index">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" :name="'learning_outcomes[]'" x-model="outcomes[index]" placeholder="What will students learn?" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <button type="button" @click="outcomes.splice(index, 1)" x-show="outcomes.length > 1" class="text-red-600 hover:text-red-800">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+                <button type="button" @click="outcomes.push('')" class="mt-3 inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Outcome
+                </button>
+            </div>
+        </div>
+
+        <!-- Requirements -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Requirements</h3>
+            <div x-data="{ requirements: {{ json_encode(old('requirements', [''])) }} }">
+                <div class="space-y-3">
+                    <template x-for="(requirement, index) in requirements" :key="index">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" :name="'requirements[]'" x-model="requirements[index]" placeholder="What are the prerequisites?" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <button type="button" @click="requirements.splice(index, 1)" x-show="requirements.length > 1" class="text-red-600 hover:text-red-800">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </template>
+                </div>
+                <button type="button" @click="requirements.push('')" class="mt-3 inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Requirement
+                </button>
+            </div>
+        </div>
+
+        <!-- SEO Settings -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">SEO Settings</h3>
+            <div class="space-y-4">
+                <div>
+                    <label for="meta_title" class="block text-sm font-medium text-gray-700">Meta Title</label>
+                    <input type="text" name="meta_title" id="meta_title" value="{{ old('meta_title') }}" maxlength="60" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <p class="mt-1 text-xs text-gray-500">Recommended: 50-60 characters</p>
+                </div>
+                <div>
+                    <label for="meta_description" class="block text-sm font-medium text-gray-700">Meta Description</label>
+                    <textarea name="meta_description" id="meta_description" rows="2" maxlength="160" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('meta_description') }}</textarea>
+                    <p class="mt-1 text-xs text-gray-500">Recommended: 150-160 characters</p>
+                </div>
+                <div>
+                    <label for="meta_keywords" class="block text-sm font-medium text-gray-700">Meta Keywords</label>
+                    <input type="text" name="meta_keywords" id="meta_keywords" value="{{ old('meta_keywords') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <p class="mt-1 text-xs text-gray-500">Comma-separated keywords</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Settings -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Additional Settings</h3>
+            <div class="space-y-3">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="drip_content" value="1" {{ old('drip_content') ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600">
+                    <span class="ml-2 text-sm text-gray-700">Enable drip content (release lessons gradually)</span>
+                </label>
+                <br>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600">
+                    <span class="ml-2 text-sm text-gray-700">Featured course</span>
+                </label>
+                <br>
+                <label class="inline-flex items-center">
+                    <input type="checkbox" name="allow_reviews" value="1" {{ old('allow_reviews', true) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600">
+                    <span class="ml-2 text-sm text-gray-700">Allow student reviews</span>
+                </label>
+                <br>
+                <label class="inline-flex items-centers">
+                    <input type="checkbox" name="discussion_enabled" value="1" {{ old('discussion_enabled', true) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600">
+                    <span class="ml-2 text-sm text-gray-700">Enable discussions</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-3">
+            <a href="{{ route('admin.courses.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50">
+                Cancel
+            </a>
+            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                Create Course
+            </button>
+        </div>
+    </form>
+</div>
+@endsection
